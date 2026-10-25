@@ -183,9 +183,11 @@ section>.section-head{padding-top:0}
 /* ---- ticker ---- */
 .hero-ticker{
   --ticker-gap-bottom:56px;
-  --ticker-band-top:53.5px; /* hairlines (20px tall at top) → line gap halved: 67px → 33.5px */
-  --ticker-band-height:calc(100% - var(--ticker-gap-bottom) - var(--ticker-band-top));
-  position:relative;margin-top:46px;height:545px;overflow:hidden;z-index:2;
+  --ticker-band-top:40px; /* white hairlines end at 20px → 20px gap to the brand line */
+  --ticker-band-height:392px; /* 90% of the former 435.5px band */
+  position:relative;margin-top:46px;
+  height:calc(var(--ticker-band-height) + var(--ticker-gap-bottom) + var(--ticker-band-top));
+  overflow:hidden;z-index:2;
 }
 /* the gradient band gets its own paint layer so the alpha mask below can only
    affect the gradient, never the cards riding on top of it */
@@ -212,8 +214,8 @@ section>.section-head{padding-top:0}
   height: 20px;
   z-index:4;
   pointer-events:none;
-  border-top:1px solid rgb(255, 255, 255);
-  border-bottom:1px solid rgb(247, 247, 247);
+  border-top:1px solid rgba(255,255,255,.55);
+  border-bottom:1px solid rgba(255,255,255,.4);
 }
 /* vertical brand line dead-centre - matched to the tallest card band */
 .hero-ticker::after{
@@ -325,18 +327,20 @@ section>.section-head{padding-top:0}
 .tag-left{left:8px}.tag-right{right:8px}
 .tag.top{top:14%}.tag.bottom{bottom:16%}
 
-.ad-card{position:relative;flex:none;margin:0;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 24px 52px rgba(160,80,30,.14),0 3px 10px rgba(0,0,0,.06)}
-.ad-card img{width:100%;height:100%;object-fit:cover;display:block}
+.ad-card{position:relative;flex:none;margin:0;border-radius:12px;background:#fff;box-shadow:0 24px 52px rgba(160,80,30,.14),0 3px 10px rgba(0,0,0,.06)}
+.ad-card img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit}
 .alo{width:274px;height:343px}
 .duolingo{width:285px;height:380px}
 .nb{width:224px;height:342px}
 .headspace{width:285px;height:380px;border:1.5px dashed rgba(47,106,224,.75);box-shadow:none;border-radius:14px}
 .published{
-  position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+  position:absolute;top:auto;right:10px;bottom:100%;left:auto;transform:none;
   background:#17a34a;color:#fff;font:700 10.5px/1 var(--f-body);text-transform:uppercase;
   padding:4px 11px;border-radius:999px;letter-spacing:.02em;white-space:nowrap;
   box-shadow:0 7px 16px rgba(0,0,0,.28);z-index:3;
 }
+/* the badge is "earned" only after a card crosses the orange line */
+.ticker-lane.lane-left .published{opacity:0}
 
 .floating-agent{
   position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:5;
@@ -976,7 +980,7 @@ section>.section-head{padding-top:0}
   .hero{padding-top:120px}
   .hero h1{font-size:33px}
   .hero-sub{font-size:16px}
-  .hero-ticker{height:500px;--ticker-band-top:42px}
+  .hero-ticker{--ticker-band-height:362px;--ticker-band-top:38px}
   .hero-ticker::before{height:20px}
   .floating-agent{padding:11px 18px}
   .agent-word{font-size:16px}
@@ -1017,7 +1021,7 @@ section>.section-head{padding-top:0}
 @media (max-width:600px){
   .hero h1{font-size:27px}
   .hero-sub{font-size:15px}
-  .hero-ticker{height:430px;--ticker-band-top:52.4px}
+  .hero-ticker{--ticker-band-height:289.5px;--ticker-band-top:43px}
   .hero-ticker::before{height:28px}
   .ticker-set{transform:scale(.8);transform-origin:bottom left}
   .ticker-lane.lane-left{
