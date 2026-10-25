@@ -21,7 +21,7 @@ export default function TeamPage() {
           <img className="tc i" src="/assets/img/V7xGHbSv93dzSy8y5Q9EjxPYtPw.png" alt="" />
           <img className="tc j" src="/assets/img/5VgjV7PUPnltMQRu0QXhGOPb9T0.jpeg" alt="" />
         </div>
-        <h1 className="t-statement reveal">We got tired of watching smart teams make slow decisions. So we built GetCrux to solve this.</h1>
+        <h1 className="t-statement reveal"><span className="t-s1">We got tired of watching smart teams make slow decisions.</span> <span className="t-s2">So we built GetCrux to solve this.</span></h1>
       </section>
 
       {/* TEAM */}

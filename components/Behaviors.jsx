@@ -74,6 +74,55 @@ export default function Behaviors() {
       kick();
     }
 
+    /* ---------- Team hero collage: 3D cursor drift ----------
+       The ten photos sit at different depths: each drifts a few px toward the
+       cursor and tilts in 3D to face it, scaled by depth (bigger/nearer photos
+       move more), then settles back to its rest pose. Per-image perspective()
+       keeps the paint order identical to the static layout. */
+    const collage = document.querySelector('.t-collage');
+    const heroZone = collage ? collage.closest('.t-hero') : null;
+    if (collage && heroZone && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const tcs = Array.from(collage.querySelectorAll('.tc'));
+      const DRIFT = [42, 36, 20, 14, 21, 20, 16, 30, 24, 19]; // px travel per unit cursor, a…j
+      const TILT = [6.5, 5.5, 3.5, 2.5, 3.5, 3.5, 3, 5, 4, 3]; // max 3D tilt in deg, a…j
+      const BASE = [6, -5, 3, -8, 7, -7, 9, 4, -6, 8]; // rest rotations, must match the CSS
+      const cur = { x: 0, y: 0 };
+      const tgt = { x: 0, y: 0 };
+      let t3 = 0;
+      const paint = () => {
+        tcs.forEach((el, i) => {
+          el.style.transform =
+            'perspective(700px) translate3d(' + (cur.x * DRIFT[i]).toFixed(2) + 'px,' +
+            (cur.y * DRIFT[i]).toFixed(2) + 'px,0) rotateX(' + (-cur.y * TILT[i]).toFixed(2) +
+            'deg) rotateY(' + (cur.x * TILT[i]).toFixed(2) + 'deg) rotate(' + BASE[i] + 'deg)';
+        });
+      };
+      const step = () => {
+        t3 = 0;
+        cur.x += (tgt.x - cur.x) * 0.09; // light easing toward the cursor target
+        cur.y += (tgt.y - cur.y) * 0.09;
+        if (Math.abs(tgt.x - cur.x) < 0.001 && Math.abs(tgt.y - cur.y) < 0.001) {
+          cur.x = tgt.x; cur.y = tgt.y;
+        }
+        paint();
+        if (cur.x !== tgt.x || cur.y !== tgt.y) t3 = requestAnimationFrame(step);
+      };
+      const kick = () => { if (!t3) t3 = requestAnimationFrame(step); };
+      const onMove = (e) => {
+        const r = heroZone.getBoundingClientRect();
+        tgt.x = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width) * 2 - 1));
+        tgt.y = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height) * 2 - 1));
+        kick();
+      };
+      const onLeave = () => { tgt.x = 0; tgt.y = 0; kick(); }; // cursor leaves the hero → ease back to rest
+      on(heroZone, 'mousemove', onMove, { passive: true });
+      on(heroZone, 'mouseleave', onLeave, { passive: true });
+      offs.push(() => {
+        if (t3) cancelAnimationFrame(t3);
+        tcs.forEach((el) => { el.style.transform = ''; }); // drop inline 3D pose so the CSS rest pose shows again
+      });
+    }
+
     /* ---------- Header theme (light / dark) ---------- */
     const header = document.getElementById('siteHeader');
     const HEADER_Y = 63; // vertical centre of the floating pill (35px top + 56px / 2)
