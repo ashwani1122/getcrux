@@ -44,11 +44,13 @@ export default function Behaviors() {
     /* ---------- Statement float-card scroll parallax ----------
        Each card drifts along its own diagonal up to ±200px while the statement
        section passes through the viewport, progress over ~1.33 viewport heights,
-       then clamps: instacart ↙(-x,+y) · nu ↖(-x,-y) · hoka ↗(+x,-y) · oura ↘(+x,+y) */
+       then clamps: instacart ↘(+x,+y) · nu ↖(-x,-y) · hoka ↗(+x,-y) · oura ↘(+x,+y).
+       Instacart starts right of the copy, so it must drift further right (never
+       left) to stay clear of the heading and button. */
     const statement = document.querySelector('.statement');
     if (statement && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       const floats = [
-        [statement.querySelector('.fc-instacart'), -200, 200],
+        [statement.querySelector('.fc-instacart'), 100, 200],
         [statement.querySelector('.fc-nu'), -200, -200],
         [statement.querySelector('.fc-hoka'), 200, -200],
         [statement.querySelector('.fc-oura'), 200, 200],

@@ -61,7 +61,17 @@ button{font:inherit;color:inherit}
 .btn:hover .icon{transform:translateX(3px)}
 .btn-light{background:#fff;color:#141414;box-shadow:0 10px 30px rgba(0,0,0,.28)}
 .btn-light:hover{background:#efefec}
-.btn-dark{background:#333}
+.btn-dark{
+  background:#333;overflow:hidden;isolation:isolate;
+}
+/* brand-orange wipe from left to right on hover */
+.btn-dark::before{
+  content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  background:var(--orange);
+  transform:scaleX(0);transform-origin:left center;
+  transition:transform .38s var(--ease);
+}
+.btn-dark:hover::before{transform:scaleX(1)}
 .btn-outline{background:#161616;border-color:#333;color:#fff}
 .btn-outline:hover{border-color:#555}
 
@@ -87,6 +97,8 @@ section>.section-head{padding-top:0}
 .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
+  .btn-dark::before{transition:none}
+  .nav-cta::before{transition:none}
   .ticker-track{animation-duration:420s!important}
   .insight-track{animation-duration:50s!important}
 }
@@ -117,19 +129,29 @@ section>.section-head{padding-top:0}
 }
 .nav-link:hover{opacity:.55}
 .nav-cta{
-  display:inline-flex;align-items:center;gap:9px;height:42px;padding:0 17px;
+  position:relative;display:inline-flex;align-items:center;gap:9px;height:42px;padding:0 17px;
   border-radius:999px;background:#1d1d1d;color:#fff;text-decoration:none;white-space:nowrap;
   font:400 12px/1 var(--f-ui);text-transform:uppercase;
+  overflow:hidden;isolation:isolate;
   transition:background .25s ease,color .25s ease;
 }
+/* navbar CTA: brand-orange wipe from left to right on hover */
+.nav-cta::before{
+  content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  background:var(--orange);
+  transform:scaleX(0);transform-origin:left center;
+  transition:transform .38s var(--ease);
+}
 .nav-cta .icon{font-size:15px}
-.nav-cta:hover{background:#000}
+.nav-cta:hover{color:#fff}
+.nav-cta:hover::before{transform:scaleX(1)}
 .site-header.is-dark .nav-pill{
   background:rgba(22,22,22,.74);border-color:rgba(255,255,255,.13);
   box-shadow:0 16px 44px rgba(0,0,0,.4);
 }
 .site-header.is-dark .nav-link{color:#f2f2f2}
 .site-header.is-dark .nav-cta{background:#fff;color:#131313}
+.site-header.is-dark .nav-cta:hover{color:#fff}
 .nav-toggle{
   display:none;margin-left:auto;width:40px;height:40px;flex:none;
   border-radius:999px;border:1px solid rgba(0,0,0,.12);background:transparent;
@@ -183,8 +205,10 @@ section>.section-head{padding-top:0}
 /* ---- ticker ---- */
 .hero-ticker{
   --ticker-gap-bottom:56px;
-  --ticker-band-top:40px; /* white hairlines end at 20px → 20px gap to the brand line */
-  --ticker-band-height:392px; /* 90% of the former 435.5px band */
+  /* orange band/centre line keeps its +5% height (392 → 411.6) and sits
+     20px below the twin white hairlines */
+  --ticker-band-top:40px;
+  --ticker-band-height:411.6px; /* +5% over 392px */
   position:relative;margin-top:46px;
   height:calc(var(--ticker-band-height) + var(--ticker-gap-bottom) + var(--ticker-band-top));
   overflow:hidden;z-index:2;
@@ -387,7 +411,10 @@ section>.section-head{padding-top:0}
 .fc-oura{top:62px;right:167px;width:235px;height:318px}
 .fc-hoka{top:240px;left:209px;width:231px;height:263px}
 .fc-nu{top:470px;left:148px;width:232px;height:346px}
-.fc-instacart{top:468px;right:196px;width:368px;height:374px}
+/* anchored off the centre so the copy always keeps a ~45px gap, even on
+   narrower desktops; the card bleeds off the right edge instead of covering
+   the heading/button */
+.fc-instacart{top:468px;right:auto;left:max(calc(50% + 240px),calc(100% - 564px));width:368px;height:374px}
 
 /* ============================================================
    PROBLEM (dark)
@@ -980,7 +1007,7 @@ section>.section-head{padding-top:0}
   .hero{padding-top:120px}
   .hero h1{font-size:33px}
   .hero-sub{font-size:16px}
-  .hero-ticker{--ticker-band-height:362px;--ticker-band-top:38px}
+  .hero-ticker{--ticker-band-height:380.1px;--ticker-band-top:40px}
   .hero-ticker::before{height:20px}
   .floating-agent{padding:11px 18px}
   .agent-word{font-size:16px}
@@ -1021,7 +1048,7 @@ section>.section-head{padding-top:0}
 @media (max-width:600px){
   .hero h1{font-size:27px}
   .hero-sub{font-size:15px}
-  .hero-ticker{--ticker-band-height:289.5px;--ticker-band-top:43px}
+  .hero-ticker{--ticker-band-height:304px;--ticker-band-top:48px}
   .hero-ticker::before{height:28px}
   .ticker-set{transform:scale(.8);transform-origin:bottom left}
   .ticker-lane.lane-left{
